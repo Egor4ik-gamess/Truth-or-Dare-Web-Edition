@@ -1,0 +1,158 @@
+:root {
+    --bg-blue: #00d2ff;
+    --bg-magenta: #ff007f;
+    --dark-slate: #1e293b;
+    --white: #ffffff;
+}
+
+body {
+    margin: 0; font-family: 'Inter', system-ui, sans-serif;
+    overflow: hidden; background: #080c14; color: var(--dark-slate);
+}
+
+/* Background Effects */
+.overlay-vignette {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.6) 100%);
+    z-index: -1; pointer-events: none;
+}
+
+.overlay-stripes {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: repeating-linear-gradient(
+        0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1) 1px,
+        transparent 1px, transparent 3px
+    );
+    z-index: -1; pointer-events: none;
+}
+
+#bg-canvas {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -2; transition: background-color 2s ease;
+}
+
+#app {
+    display: flex; justify-content: center; align-items: flex-start;
+    height: 100vh; padding-top: 40px; box-sizing: border-box;
+}
+
+.white-box {
+    background: var(--white); width: 90%; max-width: 400px;
+    border-radius: 24px; padding: 24px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    display: flex; flex-direction: column; position: relative;
+    z-index: 10; transition: border 0.3s ease;
+}
+
+/* Theme Borders */
+.kids-theme { border: 6px solid #FFD600; }
+.teens-theme { border: 6px solid #a855f7; }
+.adults-theme { border: 6px solid #1e293b; }
+.spicy-theme { border: 6px solid #ef4444; }
+.xtreme-theme { border: 6px solid #7f1d1d; }
+.couples-theme { border: 6px solid #f472b6; }
+.chaos-theme { border: 6px solid #FF3D00; animation: shake 0.3s infinite; }
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px); }
+    50% { transform: translate(-1px, -1px); }
+    100% { transform: translate(1px, -1px); }
+}
+
+section { width: 100%; display: flex; flex-direction: column; }
+.header { text-align: center; font-size: 1.8rem; margin: 0 0 10px 0; font-weight: 800; }
+
+/* Competitive Toggle UI */
+.toggle-container {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 5px; background: #f8fafc; border-radius: 12px; margin-top: 10px;
+    font-weight: bold; font-size: 0.85rem;
+}
+
+.switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #cbd5e1; transition: .4s; border-radius: 20px;
+}
+.slider:before {
+    position: absolute; content: ""; height: 16px; width: 16px;
+    left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%;
+}
+input:checked + .slider { background-color: var(--bg-magenta); }
+input:checked + .slider:before { transform: translateX(18px); }
+
+/* Player Menu */
+.player-menu { margin: 15px 0; flex-grow: 1; overflow-y: auto; max-height: 180px; }
+.player-entry { padding: 10px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 10px; }
+
+.add-player-box { display: flex; gap: 8px; margin-top: 10px; }
+input { flex: 1; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; outline: none; }
+.btn-add { background: var(--dark-slate); color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: bold; }
+
+/* Buttons */
+.btn-start, .btn-truth, .btn-dare, .btn-success, .btn-fail, .btn-util {
+    border: none; border-radius: 14px; padding: 16px;
+    font-weight: 700; color: white; cursor: pointer; transition: transform 0.1s;
+}
+
+.btn-start { background: var(--dark-slate); margin-top: 10px; width: 100%; }
+.btn-start:disabled { background: #cbd5e1; cursor: not-allowed; }
+.btn-skip { background: #64748b; font-size: 0.9rem; }
+
+.choice-buttons { display: flex; gap: 10px; margin-top: 20px; }
+.btn-truth { background: var(--bg-blue); flex: 1; font-size: 1.2rem; }
+.btn-dare { background: var(--bg-magenta); flex: 1; font-size: 1.2rem; }
+
+/* Card Area */
+#card {
+    min-height: 160px; border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px; color: white; text-align: center;
+    font-size: 1.2rem; margin: 15px 0; font-weight: 600; line-height: 1.4;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+}
+
+.controls-stack { display: flex; flex-direction: column; gap: 10px; }
+.btn-success { background: #10b981; }
+.btn-fail { background: #ef4444; }
+.btn-util { background: #64748b; }
+
+/* Dropdown */
+.custom-dropdown { position: relative; width: 100%; z-index: 30; }
+.dropdown-selected { background: #f8fafc; padding: 14px; border-radius: 12px; border: 2px solid #f1f5f9; cursor: pointer; font-weight: bold; }
+.dropdown-options {
+    display: none; background: white; border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1); margin-top: 5px;
+    position: absolute; width: 100%; overflow: hidden;
+}
+.dropdown-options div { padding: 12px; transition: background 0.2s; cursor: pointer; }
+.dropdown-options div:hover { background: #f1f5f9; }
+
+/* Leaderboard */
+.leaderboard-container { margin-bottom: 15px; }
+.lb-header { font-weight: 800; cursor: pointer; background: #f1f5f9; padding: 10px; border-radius: 10px; text-align: center; }
+.lb-content { display: none; margin-top: 5px; max-height: 150px; overflow-y: auto; }
+
+/* Visual Particles */
+.circle { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.25); pointer-events: none; filter: blur(2px); }
+#config-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+}
+
+.mode-checkboxes label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 0;
+}
+
+.player-entry span {
+    text-align: left;
+    word-break: break-word;
+}

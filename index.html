@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>Truth or Dare: Web Edition</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- Background Layers -->
+<div id="bg-canvas"></div>
+<div class="overlay-vignette"></div>
+<div class="overlay-stripes"></div>
+
+<div id="app">
+    <div class="white-box" id="main-container">
+        <!-- SETUP VIEW -->
+        <section id="setup-view" class="active-section">
+            <h1 class="header">TRUTH OR DARE</h1>
+
+            <div class="custom-dropdown">
+                <div class="dropdown-selected" onclick="toggleDropdown('mode-opts')">
+                    MODE: <span id="selected-mode-text">🎲 CLASSIC</span> ▼
+                </div>
+                <div id="mode-opts" class="dropdown-options">
+                    <div onclick="selectMode('kids')">👶 KIDS</div>
+                    <div onclick="selectMode('teens')">😎 TEENS</div>
+                    <div onclick="selectMode('classic')">🎲 CLASSIC</div>
+                    <div onclick="selectMode('adults')">👨 ADULTS</div>
+                    <div onclick="selectMode('spicy')">🌶️ [18+] SPICY</div>
+                    <div onclick="selectMode('xtreme')">😈 [18+] XTREME</div>
+                    <div onclick="selectMode('couples')">❤️ [18+] COUPLES</div>
+                    <div onclick="selectMode('chaos')">🌀 [18+] CHAOS</div>
+                    <div onclick="selectMode('custom')">🛠️ CUSTOM</div>
+                </div>
+            </div>
+
+            <!-- Competitive Toggle -->
+            <div class="toggle-container">
+                <span>LEADERBOARD</span>
+                <label class="switch">
+                    <input type="checkbox" id="comp-toggle" checked onchange="toggleLeaderboardPref()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div id="custom-config-area" style="display: none;">
+                <h4 style="margin: 10px 0 5px 0;">Include Full Modes:</h4>
+                <div class="mode-checkboxes"
+                     style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-size: 0.8rem; text-align: left;">
+                    <label><input type="checkbox" value="kids"> Kids</label>
+                    <label><input type="checkbox" value="classic"> Classic</label>
+                    <label><input type="checkbox" value="teens"> Teens</label>
+                    <label><input type="checkbox" value="adults"> Adults</label>
+                    <label><input type="checkbox" value="spicy"> Spicy [18+]</label>
+                    <label><input type="checkbox" value="xtreme"> Xtreme [18+]</label>
+                    <label><input type="checkbox" value="couples"> Couples [18+]</label>
+                </div>
+                <div class="config-btns" style="margin-top: 10px;">
+                    <button class="btn-util" onclick="openConfig('truth')">CONFIG TRUTHS</button>
+                    <button class="btn-util" onclick="openConfig('dare')">CONFIG DARES</button>
+                </div>
+            </div>
+
+            <div class="player-menu">
+                <h3>PLAYERS</h3>
+                <div id="player-list"></div>
+                <div class="add-player-box">
+                    <input type="text" id="player-input" placeholder="Enter name...">
+                    <button class="btn-add" onclick="addPlayer()">ADD</button>
+                </div>
+            </div>
+
+            <div class="setup-footer">
+                <button id="start-btn" class="btn-start" disabled onclick="startGame(false)">START MULTIPLAYER</button>
+                <button id="skip-btn" class="btn-start btn-skip" disabled onclick="startGame(true)">SKIP AND PLAY
+                </button>
+            </div>
+        </section>
+
+        <!-- PROMPT CONFIG -->
+        <section id="config-view" style="display: none;">
+            <h2 id="config-title">CONFIGURE</h2>
+            <div class="config-actions">
+                <button class="btn-util" onclick="toggleAllConfigs(true)">SELECT ALL</button>
+                <button class="btn-util" onclick="toggleAllConfigs(false)">DESELECT ALL</button>
+            </div>
+            <div id="config-list"></div>
+            <button class="btn-start" onclick="closeConfig()">SAVE & EXIT</button>
+        </section>
+
+        <!-- SELECTION VIEW -->
+        <section id="selection-view" style="display: none;">
+            <div id="lb-container" class="leaderboard-container">
+                <div class="lb-header" onclick="toggleDropdown('lb-list')">🏆 LEADERBOARD ▼</div>
+                <div id="lb-list" class="lb-content"></div>
+            </div>
+            <h2 id="turn-display">PLAYER'S TURN</h2>
+            <div class="choice-buttons">
+                <button class="btn-truth" onclick="pickType('truth')">TRUTH</button>
+                <button class="btn-dare" onclick="pickType('dare')">DARE</button>
+            </div>
+        </section>
+
+        <!-- GAME VIEW -->
+        <section id="game-view" style="display: none;">
+            <div class="game-header">
+                <div class="timer">⏳ <span id="timer-sec">60</span>s</div>
+                <div id="active-player-name">NAME</div>
+            </div>
+            <div id="card">
+                <p id="prompt-text">...</p>
+            </div>
+            <div class="controls-stack">
+                <button class="btn-success" onclick="vote(true)">SUCCESS</button>
+                <button id="unable-btn" class="btn-util" onclick="skipPrompt()">UNABLE TO DO</button>
+                <button class="btn-fail" onclick="vote(false)">FAIL</button>
+            </div>
+        </section>
+    </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
