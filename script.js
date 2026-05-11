@@ -83,10 +83,20 @@ spawnCircle();
 // --- Core Game Logic ---
 function validateStart() {
     const hasPlayers = players.length >= 2;
-    document.getElementById('start-btn').disabled = !hasPlayers;
-    document.getElementById('skip-btn').disabled = false;
-}
+    const checkedModes = document.querySelectorAll('.mode-checkboxes input:checked').length;
+    const hasCustomPrompts = (activeCustomList.truth.length > 0 || activeCustomList.dare.length > 0);
 
+    // If in custom mode, we need at least one mode checked OR one custom prompt selected
+    if (currentMode === 'custom') {
+        const canStart = (checkedModes > 0 || hasCustomPrompts);
+        document.getElementById('start-btn').disabled = !(hasPlayers && canStart);
+        document.getElementById('skip-btn').disabled = !canStart;
+    } else {
+        // For standard modes, we just check if players exist (standard modes are never empty)
+        document.getElementById('start-btn').disabled = !hasPlayers;
+        document.getElementById('skip-btn').disabled = false;
+    }
+}
 function selectMode(m) {
     currentMode = m;
     const modeNames = {
@@ -94,10 +104,18 @@ function selectMode(m) {
         spicy: "SPICY [18+]", xtreme: "XTREME [18+]", couples: "COUPLES [18+]",
         chaos: "CHAOS [18+]", custom: "CUSTOM"
     };
+
     document.getElementById('selected-mode-text').innerText = modeNames[m] || m.toUpperCase();
     document.getElementById('custom-config-area').style.display = (m === 'custom') ? 'block' : 'none';
+
+    // Disable all checkboxes by default when switching to Custom
+    if (m === 'custom') {
+        document.querySelectorAll('.mode-checkboxes input').forEach(cb => cb.checked = false);
+    }
+
     document.getElementById('mode-opts').style.display = 'none';
     document.getElementById('main-container').className = `white-box ${m}-theme`;
+    validateStart();
 }
 
 function toggleLeaderboardPref() {
@@ -105,55 +123,80 @@ function toggleLeaderboardPref() {
 }
 
 function pickType(type) {
-    window.currentType = type;
+    window.currentType = type; // Keep track of if we are doing Truth or Dare
     let pool = [];
 
+    // --- 1. BUILD THE POOL BASED ON MODE ---
     if (currentMode === 'custom') {
+        // Find all modes checked in the Custom config (e.g., Kids, Xtreme)
         const checkedModes = Array.from(document.querySelectorAll('.mode-checkboxes input:checked'))
                                   .map(el => el.value);
+
+        // Add ALL prompts from every checked mode pool
         checkedModes.forEach(m => {
             if (rawPrompts[m] && rawPrompts[m][type]) {
                 pool = pool.concat(rawPrompts[m][type]);
             }
         });
-        // Add specific hand-picked custom items
-        const customItems = activeCustomList[type].map(i => rawPrompts.custom[type][i]);
+
+        // Add the specific individual prompts hand-picked from the "Custom" lists
+        const customItems = activeCustomList[type].map(index => rawPrompts.custom[type][index]);
         pool = pool.concat(customItems);
+
     } else if (currentMode === 'chaos') {
-        // All modes except custom
+        // Chaos pulls every single prompt from every single file
         ['kids', 'teens', 'classic', 'spicy', 'xtreme', 'adults', 'couples'].forEach(m => {
-            pool = pool.concat(rawPrompts[m][type]);
+            if (rawPrompts[m] && rawPrompts[m][type]) {
+                pool = pool.concat(rawPrompts[m][type]);
+            }
         });
     } else {
-        // Standard mode selection
+        // Standard mode: just use the specific file (e.g., just teens_truth.txt)
         pool = rawPrompts[currentMode][type];
     }
 
+    // --- 2. VALIDATION ---
     if (!pool || pool.length === 0) {
-        alert("No prompts available for this selection!");
+        alert("The prompt pool is empty! Please select a mode or prompts in Custom settings.");
         return;
     }
 
-    let history = (type === 'truth') ? truthHistory : dareHistory;
-    let available = pool.filter(p => !history.includes(p));
+    // --- 3. SELECT RANDOM PROMPT ---
+    let randomIndex;
+    let selectedPrompt;
+    let attempts = 0;
 
-    if (available.length === 0) {
-        if (type === 'truth') truthHistory = []; else dareHistory = [];
-        available = pool;
-    }
+    // Try to find a prompt that hasn't been used recently
+    do {
+        randomIndex = Math.floor(Math.random() * pool.length);
+        selectedPrompt = pool[randomIndex];
+        attempts++;
+    } while (history.includes(selectedPrompt) && attempts < 20);
 
-    const selectedPrompt = available[Math.floor(Math.random() * available.length)];
+    // Update history (keep last 50 to avoid immediate repeats)
     history.push(selectedPrompt);
-    if (history.length > COOLDOWN_LIMIT) history.shift();
+    if (history.length > 50) history.shift();
 
-    document.querySelectorAll('section').forEach(s => s.style.display = 'none');
-    document.getElementById('game-view').style.display = 'flex';
+    // --- 4. UPDATE THE UI ---
+    // Hide the selection buttons, show the prompt box
+    document.getElementById('selection-zone').style.display = 'none';
+    document.getElementById('prompt-display-zone').style.display = 'block';
+
+    // Set the text and the player name
+    document.getElementById('current-player-name').innerText = players[currentPlayerIndex];
     document.getElementById('prompt-text').innerText = selectedPrompt;
-    document.getElementById('active-player-name').innerText = isSkipMode ? "" : players[currentIndex].name;
-    document.getElementById('card').style.backgroundColor = (type === 'truth') ? 'var(--bg-blue)' : 'var(--bg-magenta)';
-    document.getElementById('unable-btn').style.display = (type === 'dare') ? 'block' : 'none';
 
-    startTimer();
+    // Update colors based on type
+    const promptBox = document.getElementById('prompt-box');
+    if (type === 'truth') {
+        promptBox.style.borderColor = "#007bff";
+        document.getElementById('type-label').innerText = "TRUTH";
+        document.getElementById('type-label').style.color = "#007bff";
+    } else {
+        promptBox.style.borderColor = "#ff4d4d";
+        document.getElementById('type-label').innerText = "DARE";
+        document.getElementById('type-label').style.color = "#ff4d4d";
+    }
 }
 
 function skipPrompt() {

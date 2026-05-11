@@ -48,13 +48,13 @@
                 <h4 style="margin: 10px 0 5px 0;">Include Full Modes:</h4>
                 <div class="mode-checkboxes"
                      style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-size: 0.8rem; text-align: left;">
-                    <label><input type="checkbox" value="kids"> Kids</label>
-                    <label><input type="checkbox" value="classic"> Classic</label>
-                    <label><input type="checkbox" value="teens"> Teens</label>
-                    <label><input type="checkbox" value="adults"> Adults</label>
-                    <label><input type="checkbox" value="spicy"> Spicy [18+]</label>
-                    <label><input type="checkbox" value="xtreme"> Xtreme [18+]</label>
-                    <label><input type="checkbox" value="couples"> Couples [18+]</label>
+                    <label><input type="checkbox" value="kids" onchange="validateStart()"> Kids</label>
+                    <label><input type="checkbox" value="classic" onchange="validateStart()"> Classic</label>
+                    <label><input type="checkbox" value="teens" onchange="validateStart()"> Teens</label>
+                    <label><input type="checkbox" value="adults" onchange="validateStart()"> Adults</label>
+                    <label><input type="checkbox" value="spicy" onchange="validateStart()"> Spicy [18+]</label>
+                    <label><input type="checkbox" value="xtreme" onchange="validateStart()"> Xtreme [18+]</label>
+                    <label><input type="checkbox" value="couples" onchange="validateStart()"> Couples [18+]</label>
                 </div>
                 <div class="config-btns" style="margin-top: 10px;">
                     <button class="btn-util" onclick="openConfig('truth')">CONFIG TRUTHS</button>
