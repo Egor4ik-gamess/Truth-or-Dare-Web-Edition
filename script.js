@@ -162,7 +162,7 @@ function skipPrompt() {
 }
 
 function startTimer() {
-    let t = 60;
+    let t = 180;
     document.getElementById('timer-sec').innerText = t;
     clearInterval(timerInterval);
     timerInterval = setInterval(() => {
