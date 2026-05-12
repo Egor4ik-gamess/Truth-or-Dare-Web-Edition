@@ -5,7 +5,7 @@
     --dark-slate: #1e293b;
     --text-main: #0f172a;
     --text-muted: #64748b;
-    --theme-color: #00d2ff; /* Default dynamic color */
+    --theme-color: #00d2ff;
     --shadow-main: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     --transition-fast: all 0.2s ease;
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -17,24 +17,26 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+/* --- 2. LAYOUT OVERHAUL --- */
 body {
     margin: 0;
-    padding: 0;
+    padding: 40px; /* Safe zone inside the outline */
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background: var(--dark-bg);
     color: var(--dark-slate);
-    height: 100vh;
+    min-height: 100vh;
     width: 100vw;
     display: flex;
+    flex-direction: column; /* Vertical stack: App -> Footer */
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow-x: hidden;
     transition: background 0.8s ease-in-out;
-    /* --- THE SATURATED 30PX OUTLINE --- */
+    /* THE SATURATED 30PX OUTLINE */
     box-shadow: inset 0 0 0 var(--outline-width) var(--theme-color);
 }
 
-/* --- 2. BACKGROUND ENGINE & OVERLAYS --- */
+/* --- 3. BACKGROUND ENGINE & OVERLAYS --- */
 #bg-canvas {
     position: fixed;
     top: var(--outline-width);
@@ -62,19 +64,22 @@ body {
     z-index: 3; pointer-events: none;
 }
 
-/* --- 3. MAIN APP CONTAINER --- */
+/* --- 4. MAIN APP CONTAINER --- */
 #app {
     position: relative;
     z-index: 10;
     width: 100%;
     max-width: 460px;
-    padding: 20px;
     perspective: 1000px;
+    flex-grow: 1; /* Takes available space without pushing footer out */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .white-box {
     background: var(--glass);
-    padding: 40px;
+    padding: 35px;
     border-radius: 36px;
     text-align: center;
     box-shadow: var(--shadow-main);
@@ -82,15 +87,16 @@ body {
     backdrop-filter: blur(16px);
     border: 6px solid var(--theme-color);
     position: relative;
-    overflow: hidden;
+    max-height: 80vh; /* Prevents overflow on short screens */
+    overflow-y: auto;
 }
 
-/* --- 4. TYPOGRAPHY --- */
+/* --- 5. TYPOGRAPHY --- */
 h1.header {
-    font-size: 2.4rem;
+    font-size: 2.2rem;
     font-weight: 900;
     letter-spacing: -2px;
-    margin: 0 0 30px 0;
+    margin: 0 0 25px 0;
     text-transform: uppercase;
     background: linear-gradient(135deg, #0f172a, #334155);
     -webkit-background-clip: text;
@@ -99,7 +105,7 @@ h1.header {
 
 h2, h3 { margin: 0 0 15px 0; font-weight: 800; }
 
-/* --- 5. UI COMPONENTS (DROPDOWNS & TOGGLES) --- */
+/* --- 6. UI COMPONENTS --- */
 .custom-dropdown { position: relative; margin-bottom: 20px; }
 
 .dropdown-selected {
@@ -115,9 +121,6 @@ h2, h3 { margin: 0 0 15px 0; font-weight: 800; }
     transition: var(--transition-fast);
 }
 
-.dropdown-selected:hover { border-color: var(--theme-color); background: white; }
-
-/* --- UPDATED DROPDOWN CONTAINER --- */
 .dropdown-options {
     display: none;
     background: white;
@@ -128,258 +131,174 @@ h2, h3 { margin: 0 0 15px 0; font-weight: 800; }
     width: 100%;
     z-index: 100;
     border: 1px solid #e2e8f0;
+    max-height: 200px;
+    overflow-y: auto;
     animation: slideDown 0.3s ease-out;
-
-    /* ADD THESE TWO LINES FOR SCROLLING */
-    max-height: 250px; /* Limits the height so it doesn't go off-screen */
-    overflow-y: auto;  /* Adds the scrollbar when content exceeds height */
 }
 
-/* --- UPDATED INDIVIDUAL MODE BUTTONS (SHORTER) --- */
 .dropdown-options div {
-    /* Changed padding from 14px to 10px to make them shorter */
-    padding: 10px 24px;
+    padding: 12px 24px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 0.9rem; /* Slightly smaller font to fit better */
+    font-size: 0.9rem;
     transition: 0.2s;
     text-align: left;
-    border-bottom: 1px solid #f1f5f9; /* Optional: adds a thin line between modes */
+    border-bottom: 1px solid #f1f5f9;
 }
 
-.dropdown-options div:last-child {
-    border-bottom: none;
-}
-
-/* --- OPTIONAL: THINNER SCROLLBAR FOR DROPDOWN --- */
-.dropdown-options::-webkit-scrollbar {
-    width: 4px;
-}
-
-.dropdown-options::-webkit-scrollbar-thumb {
-    background: var(--theme-color);
-    border-radius: 10px;
-}
-
-/* --- 6. PLAYER MENU & INPUTS --- */
-.player-menu { margin: 25px 0; }
-
+/* --- 7. PLAYERS & INPUTS --- */
+.player-menu { margin: 20px 0; }
 .add-player-box { display: flex; gap: 10px; margin-top: 10px; }
 
 input[type="text"] {
     flex: 1;
-    padding: 15px 20px;
+    padding: 15px;
     border-radius: 16px;
     border: 2px solid #e2e8f0;
     outline: none;
-    font-size: 1rem;
     font-weight: 600;
-    transition: var(--transition-fast);
 }
-
-input[type="text"]:focus { border-color: var(--theme-color); box-shadow: 0 0 0 4px rgba(0, 210, 255, 0.1); }
 
 .btn-add {
     background: var(--dark-slate);
     color: white;
     border: none;
-    padding: 0 22px;
+    padding: 0 20px;
     border-radius: 16px;
     cursor: pointer;
     font-weight: 800;
-    transition: var(--transition-fast);
 }
 
-.btn-add:hover { background: black; transform: scale(1.05); }
-
 #player-list {
-    max-height: 160px;
+    max-height: 140px;
     overflow-y: auto;
     margin: 15px 0;
-    padding-right: 8px;
 }
 
 .player-entry {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 12px 18px;
+    padding: 10px 15px;
     background: white;
     border: 1px solid #e2e8f0;
-    border-radius: 16px;
+    border-radius: 14px;
     margin-bottom: 8px;
-    animation: fadeIn 0.3s ease;
 }
 
-.player-entry span { font-weight: 700; color: var(--dark-slate); }
-
-.player-entry button {
-    background: #fee2e2;
-    color: #ef4444;
-    border: none;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-weight: 900;
-    transition: 0.2s;
-}
-
-.player-entry button:hover { background: #fecaca; transform: rotate(90deg); }
-
-/* --- 7. BUTTONS & ACTIONS --- */
+/* --- 8. GAME BUTTONS --- */
 .btn-start {
     width: 100%;
-    padding: 20px;
+    padding: 18px;
     border: none;
-    border-radius: 20px;
+    border-radius: 18px;
     background: var(--theme-color);
     color: white;
     font-weight: 900;
-    font-size: 1.1rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
     cursor: pointer;
-    box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
-    transition: var(--transition-smooth);
 }
-
-.btn-start:hover:not(:disabled) {
-    transform: translateY(-3px);
-    filter: brightness(1.1);
-    box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.3);
-}
-
-.btn-start:disabled { opacity: 0.4; cursor: not-allowed; filter: grayscale(0.8); }
 
 .btn-skip {
     background: transparent !important;
     border: 3px solid var(--theme-color) !important;
     color: var(--theme-color) !important;
-    margin-top: 15px;
+    margin-top: 10px;
 }
 
-.choice-buttons { display: flex; gap: 15px; margin-top: 25px; }
+.choice-buttons { display: flex; gap: 12px; margin-top: 20px; }
 
 .btn-truth, .btn-dare {
-    padding: 22px;
-    border-radius: 20px;
+    padding: 20px;
+    border-radius: 18px;
     border: none;
     color: white;
     font-weight: 900;
-    font-size: 1.2rem;
     flex: 1;
     cursor: pointer;
-    transition: var(--transition-smooth);
 }
 
-.btn-truth { background: #00d2ff; box-shadow: 0 8px 20px rgba(0, 210, 255, 0.3); }
-.btn-dare { background: #ff007f; box-shadow: 0 8px 20px rgba(255, 0, 127, 0.3); }
+.btn-truth { background: #00d2ff; }
+.btn-dare { background: #ff007f; }
 
-.btn-truth:hover, .btn-dare:hover { transform: translateY(-5px) scale(1.02); }
-
-/* --- 8. GAME VIEW ELEMENTS --- */
-.game-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
+/* --- 9. GAME VIEW --- */
+.game-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 
 .timer {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 900;
-    color: var(--text-muted);
     background: #f1f5f9;
-    padding: 10px 20px;
+    padding: 8px 16px;
     border-radius: 50px;
-    border: 2px solid #e2e8f0;
 }
 
-#active-player-name { font-weight: 900; color: var(--theme-color); font-size: 1.2rem; }
-
 #card {
-    /* Use the variable with 'white' as a fallback */
     background: var(--card-bg, white) !important;
-    min-height: 160px;
+    min-height: 140px;
     border-radius: 24px;
-    padding: 30px;
+    padding: 25px;
     display: flex;
     align-items: center;
     justify-content: center;
     border: 2px solid #f1f5f9;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.02);
+    transition: var(--transition-smooth);
 }
 
 #prompt-text {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 700;
-    color: white;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    color: var(--text-main); /* Default text color */
     line-height: 1.4;
     margin: 0;
 }
 
-.controls-stack { display: flex; flex-direction: column; gap: 12px; margin-top: 25px; }
+/* Logic for when card is colored */
+#card[style*="--card-bg"] #prompt-text {
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
 
-.btn-success { background: #22c55e; color: white; padding: 18px; border-radius: 18px; border: none; font-weight: 800; cursor: pointer; transition: 0.2s; }
-.btn-fail { background: #ef4444; color: white; padding: 18px; border-radius: 18px; border: none; font-weight: 800; cursor: pointer; transition: 0.2s; }
-.btn-util { background: #f1f5f9; color: #64748b; padding: 14px; border-radius: 16px; border: none; font-weight: 700; cursor: pointer; transition: 0.2s; }
+.controls-stack { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+.btn-success { background: #22c55e; color: white; padding: 16px; border-radius: 16px; border: none; font-weight: 800; cursor: pointer; }
+.btn-fail { background: #ef4444; color: white; padding: 16px; border-radius: 16px; border: none; font-weight: 800; cursor: pointer; }
+.btn-util { background: #f1f5f9; color: #64748b; padding: 12px; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; }
 
-.btn-success:hover, .btn-fail:hover, .btn-util:hover { filter: brightness(0.95); transform: scale(0.98); }
-
-/* --- 9. LEADERBOARD --- */
+/* --- 10. LEADERBOARD --- */
 .leaderboard-container {
     background: #f8fafc;
-    border-radius: 20px;
-    margin-bottom: 25px;
+    border-radius: 18px;
+    margin-bottom: 20px;
     border: 2px solid #e2e8f0;
 }
 
-.lb-header { padding: 12px; font-weight: 900; font-size: 0.9rem; cursor: pointer; color: var(--text-muted); }
+.lb-content { padding: 0 15px 15px 15px; max-height: 120px; overflow-y: auto; }
 
-.lb-content { padding: 0 15px 15px 15px; text-align: left; max-height: 150px; overflow-y: auto; }
-
-.lb-content div {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid #f1f5f9;
-    font-weight: 700;
-}
-
-/* --- 10. SCROLLBARS & ANIMATIONS --- */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; border: 2px solid var(--glass); }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+/* --- 11. SCROLLBARS & ANIMATIONS --- */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
 @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
 
-/* --- 11. FOOTER & RESPONSIVE --- */
+/* --- 12. FIXED FOOTER & RESPONSIVE --- */
 .game-footer {
-    position: fixed;
-    bottom: 45px;
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative; /* Fixed overlap by using relative flow */
+    margin-top: 20px;
+    padding-bottom: 10px;
     color: white;
     font-weight: 900;
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     z-index: 100;
     text-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    pointer-events: none;
+    text-align: center;
 }
 
 @media (max-width: 500px) {
     :root { --outline-width: 15px; }
-    #app { padding: 10px; }
-    .white-box { padding: 25px; border-radius: 28px; }
-    h1.header { font-size: 1.8rem; }
-    #prompt-text { font-size: 1.25rem; }
+    body { padding: 25px; }
+    .white-box { padding: 25px; }
+    h1.header { font-size: 1.7rem; }
+    #prompt-text { font-size: 1.15rem; }
 }
 
-/* --- 12. MODE-SPECIFIC OVERRIDES --- */
 .chaos-theme { animation: pulse 2s infinite; }
 .spicy-theme, .xtreme-theme { border-width: 8px; }
