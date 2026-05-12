@@ -20,20 +20,19 @@
 /* --- 2. LAYOUT OVERHAUL --- */
 body {
     margin: 0;
-    padding: 40px; /* Safe zone inside the outline */
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background: var(--dark-bg);
+    padding: 40px;
+    font-family: 'Inter', sans-serif;
+    background: #000000 !important; /* Forces pure black base */
     color: var(--dark-slate);
     min-height: 100vh;
-    width: 100vw;
     display: flex;
-    flex-direction: column; /* Vertical stack: App -> Footer */
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    overflow-x: hidden;
-    transition: background 0.8s ease-in-out;
-    /* THE SATURATED 30PX OUTLINE */
+    overflow: hidden;
+    /* The 30px saturated outline stays vivid against the black */
     box-shadow: inset 0 0 0 var(--outline-width) var(--theme-color);
+    transition: background 0.8s ease-in-out;
 }
 
 /* --- 3. BACKGROUND ENGINE & OVERLAYS --- */
